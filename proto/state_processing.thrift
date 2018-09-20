@@ -382,8 +382,20 @@ service Automaton {
     Machine GetMachine (1: MachineDescriptor desc)
          throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: EventNotFound ex3);
 
+    /**
+     * Удалить машину вместе со всеми её событиями.
+     * Опубликованные в event sink события остаются нетронутыми.
+     */
     void Remove (1: base.Namespace ns, 2: base.ID id)
          throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2);
+
+     /**
+      * Удалить машину вместе со всеми её событиями.
+      * Опубликованные в event sink события остаются нетронутыми.
+      */
+     void Modernize (1: MachineDescriptor desc)
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2);
+
 }
 
 /**
