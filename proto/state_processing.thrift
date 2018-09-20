@@ -289,7 +289,7 @@ struct ModernizeEventResult {
 }
 
 /**
- * Сервис миграции устаревших представлений данных машины.
+ * Сервис обновления устаревших представлений данных машины.
  */
 service Modernizer {
 
@@ -389,12 +389,12 @@ service Automaton {
     void Remove (1: base.Namespace ns, 2: base.ID id)
          throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2);
 
-     /**
-      * Удалить машину вместе со всеми её событиями.
-      * Опубликованные в event sink события остаются нетронутыми.
-      */
-     void Modernize (1: MachineDescriptor desc)
-        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2);
+    /**
+     * Принудительно обновить представления данных указанной машины.
+     * В частности: представления событий.
+     */
+    void Modernize (1: MachineDescriptor desc)
+       throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2);
 
 }
 
