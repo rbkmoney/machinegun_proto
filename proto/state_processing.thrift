@@ -354,33 +354,33 @@ service Automaton {
      * Если машина с таким ID уже существует, то кинется иключение MachineAlreadyExists.
      */
     void Start (1: base.Namespace ns, 2: base.ID id, 3: Args a)
-         throws (1: NamespaceNotFound ex1, 2: MachineAlreadyExists ex2, 3: MachineFailed ex3);
+        throws (1: NamespaceNotFound ex1, 2: MachineAlreadyExists ex2, 3: MachineFailed ex3);
 
     /**
      * Попытаться перевести определённый процесс автомата из ошибочного
      * состояния в штатное и продолжить его исполнение.
      */
     void Repair (1: MachineDescriptor desc, 2: Args a)
-         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
 
     /**
      * Попытаться перевести определённый процесс автомата из ошибочного
      * состояния в предыдущее штатное и продолжить его исполнение.
      */
     void SimpleRepair (1: base.Namespace ns, 2: Reference ref)
-         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
 
     /**
      * Совершить вызов и дождаться на него ответа.
      */
     CallResponse Call (1: MachineDescriptor desc, 2: Args a)
-         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3);
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3);
 
     /**
      * Метод возвращает _машину_ (Machine)
      */
     Machine GetMachine (1: MachineDescriptor desc)
-         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: EventNotFound ex3);
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: EventNotFound ex3);
 
     /**
      * Удалить машину вместе со всеми её событиями.
