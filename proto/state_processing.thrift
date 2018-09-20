@@ -274,6 +274,29 @@ service Processor {
 
 }
 
+struct MachineEvent {
+    /** Пространство имён, в котором работает машина */
+    1: required base.Namespace ns
+    /** Основной идентификатор машины */
+    2: required base.ID  id
+    /** Событие машины */
+    3: required Event event
+}
+
+struct ModernizeEventResult {
+    /** Обновлённое представление события */
+    1: required EventBody event_payload
+}
+
+/**
+ * Сервис миграции устаревших представлений данных машины.
+ */
+service Modernizer {
+
+    ModernizeEventResult ModernizeEvent (1: MachineEvent ev) throws ()
+
+}
+
 enum Direction {
     forward  = 1
     backward = 2
