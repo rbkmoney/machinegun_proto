@@ -18,11 +18,23 @@ exception MachineAlreadyExists {}
 exception MachineFailed {}
 exception MachineAlreadyWorking {}
 
-typedef msgpack.Value EventBody;
-typedef list<EventBody> EventBodies;
+struct Content {
+    /** Версия представления данных */
+    1: optional i32           vsn
+    2: required msgpack.Value data
+}
+
+typedef Content EventBody
+typedef list<EventBody> EventBodies
+
+typedef Content AuxState
 
 typedef msgpack.Value Args
-typedef msgpack.Value AuxState
+
+// deprecated
+typedef msgpack.Value EventBodyLegacy
+typedef list<EventBodyLegacy> EventBodiesLegacy
+typedef msgpack.Value AuxStateLegacy
 
 /**
  * Произвольное событие, продукт перехода в новое состояние.
@@ -33,9 +45,14 @@ struct Event {
      * Монотонно возрастающее целочисленное значение, таким образом на множестве
      * событий задаётся отношение полного порядка (total order).
      */
-    1: required base.EventID    id;
-    2: required base.Timestamp  created_at;     /* Время происхождения события */
-    4: required EventBody       event_payload;  /* Описание события */
+    1: required base.EventID    id
+    /** Время происхождения события */
+    2: required base.Timestamp  created_at
+    /** Описание события */
+    5: required EventBody       event_payload
+
+    // deprecated
+    4: required EventBodyLegacy event_payload_legacy
 }
 
 /**
@@ -71,18 +88,21 @@ struct Machine {
      * Диапазон с которым была запрошена история машины.
      */
     4: required HistoryRange history_range;
+
     /**
      * Вспомогательное состояние — это некоторый набор данных, характеризующий состояние,
      * и в отличие от событий не сохраняется в историю, а каждый раз перезаписывается.
      * Бывает полезен, чтобы сохранить данные между запросами, не добавляя их в историю.
      */
-
-    5: optional AuxState aux_state;
+    7: optional AuxState aux_state;
 
     /**
      * Текущий активный таймер (точнее, дата и время когда таймер сработает).
      */
     6: optional base.Timestamp timer;
+
+    // deprecated
+    5: optional AuxStateLegacy aux_state_legacy
 }
 
 /**
@@ -179,8 +199,14 @@ union Reference {
  * По сути, это переход в стейте конечного автомата.
  */
 struct MachineStateChange {
-    1: required AuxState      aux_state; /** Новый вспомогательный стейт автомата */
-    2: required EventBodies   events;    /** Список описаний событий, порождённых в результате обработки */
+    /** Новый вспомогательный стейт автомата */
+    3: required AuxState      aux_state
+    /** Список описаний событий, порождённых в результате обработки */
+    4: required EventBodies   events
+
+    // deprecated
+    1: required AuxStateLegacy      aux_state_legacy
+    2: required EventBodiesLegacy   events_legacy
 }
 
 /**
