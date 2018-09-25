@@ -48,11 +48,13 @@ struct Event {
     1: required base.EventID    id
     /** Время происхождения события */
     2: required base.Timestamp  created_at
-    /** Описание события */
-    5: required EventBody       event_payload
 
-    // deprecated
-    4: required EventBodyLegacy event_payload_legacy
+    // Inlined from `Content`
+
+    /** Версия представления данных */
+    5: optional i32 format_version
+    /** Описание события */
+    4: required msgpack.Value data
 }
 
 /**
