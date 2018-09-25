@@ -200,13 +200,13 @@ union Reference {
  */
 struct MachineStateChange {
     /** Новый вспомогательный стейт автомата */
-    3: required AuxState      aux_state
+    3: optional AuxState      aux_state
     /** Список описаний событий, порождённых в результате обработки */
-    4: required EventBodies   events
+    4: optional EventBodies   events
 
     // deprecated
-    1: required AuxStateLegacy      aux_state_legacy
-    2: required EventBodiesLegacy   events_legacy
+    1: optional AuxStateLegacy      aux_state_legacy
+    2: optional EventBodiesLegacy   events_legacy
 }
 
 /**
