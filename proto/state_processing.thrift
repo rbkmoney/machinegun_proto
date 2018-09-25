@@ -20,7 +20,7 @@ exception MachineAlreadyWorking {}
 
 struct Content {
     /** Версия представления данных */
-    1: optional i32           vsn
+    1: optional i32           version
     2: required msgpack.Value data
 }
 
