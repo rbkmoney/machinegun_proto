@@ -52,26 +52,30 @@ ifdef LOCAL_BUILD
 DOCKER_RUN_OPTS += -v $$HOME/.m2:/home/$(UNAME)/.m2:rw
 endif
 
-COMMIT_HASH = $(shell git --no-pager log -1 --pretty=format:"%h")
-NUMBER_COMMITS = $(shell git rev-list --count HEAD)
+COMMIT_HASH := $(shell git --no-pager log -1 --pretty=format:"%h")
+NUMBER_COMMITS := $(shell git rev-list --count HEAD)
 
-java_compile:
-	$(if $(SETTINGS_XML),,echo "SETTINGS_XML not defined" ; exit 1)
-	mvn compile -s $(SETTINGS_XML)
+JAVA_PKG_VERSION := 1.$(NUMBER_COMMITS)-$(COMMIT_HASH)
 
-deploy_nexus:
+ifdef BRANCH_NAME
+ifeq "$(findstring epic,$(BRANCH_NAME))" "epic"
+JAVA_PKG_VERSION := $(JAVA_PKG_VERSION)-epic
+endif
+endif
+
+MVN = mvn -s $(SETTINGS_XML) -Dpath_to_thrift="$(THRIFT)" -Dcommit.number="$(NUMBER_COMMITS)"
+
+java.compile: java.settings
+	$(MVN) compile
+
+java.deploy: java.settings
+	$(MVN) versions:set versions:commit -DnewVersion="$(JAVA_PKG_VERSION)" && \
+	$(MVN) deploy
+
+java.install: java.settings
+	$(MVN) clean && \
+	$(MVN) versions:set versions:commit -DnewVersion="$(JAVA_PKG_VERSION)" && \
+	$(MVN) install
+
+java.settings:
 	$(if $(SETTINGS_XML),, echo "SETTINGS_XML not defined"; exit 1)
-	mvn versions:set versions:commit -DnewVersion="1.$(NUMBER_COMMITS)-$(COMMIT_HASH)" -s $(SETTINGS_XML) \
-	&& mvn deploy -s $(SETTINGS_XML) -Dpath_to_thrift="$(THRIFT)" -Dcommit.number="$(NUMBER_COMMITS)"
-
-deploy_epic_nexus:
-	$(if $(SETTINGS_XML),, echo "SETTINGS_XML not defined"; exit 1)
-	mvn versions:set versions:commit -DnewVersion="1.$(NUMBER_COMMITS)-$(COMMIT_HASH)-epic" -s $(SETTINGS_XML) \
-	&& mvn deploy -s $(SETTINGS_XML) -Dpath_to_thrift="$(THRIFT)" -Dcommit.number="$(NUMBER_COMMITS)"
-
-
-java_install:
-	$(if $(SETTINGS_XML),, echo "SETTINGS_XML not defined"; exit 1)
-	mvn clean -s $(SETTINGS_XML) && \
-	mvn versions:set versions:commit -DnewVersion="1.$(NUMBER_COMMITS)-$(COMMIT_HASH)" -s $(SETTINGS_XML) \
-	&& mvn install -s $(SETTINGS_XML) -Dpath_to_thrift="$(THRIFT)" -Dcommit.number="$(NUMBER_COMMITS)"
