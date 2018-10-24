@@ -12,7 +12,7 @@ SERVICE_NAME := machinegun_proto
 BUILD_IMAGE_TAG := 585ec439a97bade30cfcebc36cefdb45f13f3372
 CALL_ANYWHERE := \
         all submodules rebar-update compile clean distclean \
-        java_compile deploy_nexus deploy_epic_nexus java_install
+        java.compile java.deploy
 CALL_W_CONTAINER := $(CALL_ANYWHERE)
 
 all: compile
