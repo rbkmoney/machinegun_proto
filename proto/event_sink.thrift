@@ -9,10 +9,18 @@ namespace java com.rbkmoney.machinegun.eventsink
 include "base.thrift"
 include "msgpack.thrift"
 
+
 /**
- * Событие, содержащее в себе событие и его источник.
+ * Сообщение о неком изменении
  */
-struct SinkEvent {
+union SinkEvent {
+    1: MachineEvent   event
+}
+
+/**
+ * Сообщение о том, что один из автоматов породил новое событие
+ */
+struct MachineEvent {
     1: required base.Namespace  source_ns      /* Идентификатор пространства имён, породившего событие */
     2: required base.ID         source_id      /* Идентификатор объекта, породившего событие */
     /**
