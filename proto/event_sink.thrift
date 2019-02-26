@@ -14,7 +14,7 @@ include "msgpack.thrift"
  * Сообщение о неком изменении
  */
 union SinkEvent {
-    1: list<MachineEvent>       machine_events
+    1: MachineEvent   event
 }
 
 /**
