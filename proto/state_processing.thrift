@@ -294,18 +294,33 @@ struct HealArgs {
 /**
  * Результат обработки запроса на починку автомата.
  */
-struct HealResult {
-    1: required HealResponse       response; /** Данные ответа */
+union HealResult {
+    1: HealResultSuccess success /** В случае успешной починки */
+    2: HealResultFail    fail    /** В случае ошибки */
+}
+
+/**
+ * Результат успешной обработки запроса на починку автомата.
+ */
+struct HealResultSuccess {
+    1: required msgpack.Value      response; /** Данные ответа */
     2: required MachineStateChange change;   /** Изменения _машины_ */
     3: required ComplexAction      action;   /** _Действие_, которое необходимо выполнить после обработки */
+}
+
+/**
+ * Результат неуспешной обработки запроса на починку автомата.
+ */
+struct HealResultFail {
+    1: required msgpack.Value response; /** Данные ответа */
 }
 
 /**
  * Ответ на запрос о починке автомата.
  */
 union HealResponse {
-    1: msgpack.Value success
-    2: msgpack.Value fail
+    1: msgpack.Value success /* Данные ответа в случае успешной обработки запроса */
+    2: msgpack.Value fail    /* Данные ответа в случае ошибки */
 }
 
 /**
