@@ -286,7 +286,7 @@ struct SignalResult {
 /**
  * Набор данных для обработки запроса на починку автомата.
  */
-struct HealArgs {
+struct RepairNewArgs {
     1: required Args     arg;      /** Данные вызова */
     2: required Machine  machine;  /** Данные по машине */
 }
@@ -294,15 +294,15 @@ struct HealArgs {
 /**
  * Результат обработки запроса на починку автомата.
  */
-union HealResult {
-    1: HealResultSuccess success /** В случае успешной починки */
-    2: HealResultFail    fail    /** В случае ошибки */
+union RepairNewResult {
+    1: RepairNewResultSuccess success /** В случае успешной починки */
+    2: RepairNewResultFail    fail    /** В случае ошибки */
 }
 
 /**
  * Результат успешной обработки запроса на починку автомата.
  */
-struct HealResultSuccess {
+struct RepairNewResultSuccess {
     1: required msgpack.Value      response; /** Данные ответа */
     2: required MachineStateChange change;   /** Изменения _машины_ */
     3: required ComplexAction      action;   /** _Действие_, которое необходимо выполнить после обработки */
@@ -311,14 +311,14 @@ struct HealResultSuccess {
 /**
  * Результат неуспешной обработки запроса на починку автомата.
  */
-struct HealResultFail {
+struct RepairNewResultFail {
     1: required msgpack.Value response; /** Данные ответа */
 }
 
 /**
  * Ответ на запрос о починке автомата.
  */
-union HealResponse {
+union RepairNewResponse {
     1: msgpack.Value success /* Данные ответа в случае успешной обработки запроса */
     2: msgpack.Value fail    /* Данные ответа в случае ошибки */
 }
@@ -344,7 +344,7 @@ service Processor {
     /**
      * Обработать запрос на починку и сформировать ответ на него.
      */
-    HealResult ProcessHeal (1: HealArgs a) throws ()
+    RepairNewResult ProcessRepairNew (1: RepairNewArgs a) throws ()
 
 }
 
@@ -448,7 +448,7 @@ service Automaton {
      * Попытаться перевести определённый процесс автомата из ошибочного состояния
      * в штатное и, получив результат операции, продолжить его исполнение.
      */
-    HealResponse Heal (1: MachineDescriptor desc, 2: Args a)
+    RepairNewResponse RepairNew (1: MachineDescriptor desc, 2: Args a)
         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
 
     /**
