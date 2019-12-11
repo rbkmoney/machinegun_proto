@@ -284,6 +284,31 @@ struct SignalResult {
 }
 
 /**
+ * Набор данных для обработки запроса на починку автомата.
+ */
+struct HealArgs {
+    1: required Args     arg;      /** Данные вызова */
+    2: required Machine  machine;  /** Данные по машине */
+}
+
+/**
+ * Результат обработки запроса на починку автомата.
+ */
+struct HealResult {
+    1: required HealResponse       response; /** Данные ответа */
+    2: required MachineStateChange change;   /** Изменения _машины_ */
+    3: required ComplexAction      action;   /** _Действие_, которое необходимо выполнить после обработки */
+}
+
+/**
+ * Ответ на запрос о починке автомата.
+ */
+union HealResponse {
+    1: msgpack.Value success
+    2: msgpack.Value fail
+}
+
+/**
  * Процессор переходов состояния ограниченного конечного автомата.
  *
  * В результате вызова каждого из методов сервиса должны появиться новое
@@ -300,6 +325,11 @@ service Processor {
      * Обработать внешний вызов и сформировать ответ на него.
      */
     CallResult ProcessCall (1: CallArgs a) throws ()
+
+    /**
+     * Обработать запрос на починку и сформировать ответ на него.
+     */
+    HealResult ProcessHeal (1: HealArgs a) throws ()
 
 }
 
@@ -397,6 +427,13 @@ service Automaton {
      * состояния в предыдущее штатное и продолжить его исполнение.
      */
     void SimpleRepair (1: base.Namespace ns, 2: Reference ref)
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
+
+    /**
+     * Попытаться перевести определённый процесс автомата из ошибочного состояния
+     * в штатное и, получив результат операции, продолжить его исполнение.
+     */
+    HealResponse Heal (1: MachineDescriptor desc, 2: Args a)
         throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
 
     /**
