@@ -286,41 +286,30 @@ struct SignalResult {
 /**
  * Набор данных для обработки запроса на починку автомата.
  */
-struct RepairNewArgs {
-    1: required Args     arg;      /** Данные вызова */
-    2: required Machine  machine;  /** Данные по машине */
+struct RepairArgs {
+    1: required Args     arg;     /** Данные вызова */
+    2: required Machine  machine; /** Данные по машине */
 }
 
 /**
  * Результат обработки запроса на починку автомата.
  */
-union RepairNewResult {
-    1: RepairNewResultSuccess success /** В случае успешной починки */
-    2: RepairNewResultFail    fail    /** В случае ошибки */
-}
-
-/**
- * Результат успешной обработки запроса на починку автомата.
- */
-struct RepairNewResultSuccess {
-    1: required msgpack.Value      response; /** Данные ответа */
+struct RepairResult {
+    1: required RepairResponse     response; /** Данные ответа */
     2: required MachineStateChange change;   /** Изменения _машины_ */
     3: required ComplexAction      action;   /** _Действие_, которое необходимо выполнить после обработки */
 }
 
 /**
- * Результат неуспешной обработки запроса на починку автомата.
- */
-struct RepairNewResultFail {
-    1: required msgpack.Value response; /** Данные ответа */
-}
-
-/**
  * Ответ на запрос о починке автомата.
  */
-union RepairNewResponse {
-    1: msgpack.Value success /* Данные ответа в случае успешной обработки запроса */
-    2: msgpack.Value fail    /* Данные ответа в случае ошибки */
+typedef msgpack.Value RepairResponse
+
+/**
+ * Исключение при неуспешной обработке запроса на починку автомата.
+ */
+exception RepairFailed {
+    1: required msgpack.Value reason;
 }
 
 /**
@@ -344,7 +333,8 @@ service Processor {
     /**
      * Обработать запрос на починку и сформировать ответ на него.
      */
-    RepairNewResult ProcessRepairNew (1: RepairNewArgs a) throws ()
+    RepairResult ProcessRepair (1: RepairArgs a)
+        throws (1: RepairFailed ex1)
 
 }
 
@@ -448,8 +438,14 @@ service Automaton {
      * Попытаться перевести определённый процесс автомата из ошибочного состояния
      * в штатное и, получив результат операции, продолжить его исполнение.
      */
-    RepairNewResponse RepairNew (1: MachineDescriptor desc, 2: Args a)
-        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
+    RepairResponse RepairNew (1: MachineDescriptor desc, 2: Args a)
+        throws (
+            1: NamespaceNotFound ex1,
+            2: MachineNotFound ex2,
+            3: MachineFailed ex3,
+            4: MachineAlreadyWorking ex4,
+            5: RepairFailed ex5
+        );
 
     /**
      * Совершить вызов и дождаться на него ответа.
