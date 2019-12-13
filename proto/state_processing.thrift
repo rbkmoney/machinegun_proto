@@ -421,24 +421,10 @@ service Automaton {
         throws (1: NamespaceNotFound ex1, 2: MachineAlreadyExists ex2, 3: MachineFailed ex3);
 
     /**
-     * Попытаться перевести определённый процесс автомата из ошибочного
-     * состояния в штатное и продолжить его исполнение.
-     */
-    void Repair (1: MachineDescriptor desc, 2: Args a)
-        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
-
-    /**
-     * Попытаться перевести определённый процесс автомата из ошибочного
-     * состояния в предыдущее штатное и продолжить его исполнение.
-     */
-    void SimpleRepair (1: base.Namespace ns, 2: Reference ref)
-        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
-
-    /**
      * Попытаться перевести определённый процесс автомата из ошибочного состояния
      * в штатное и, получив результат операции, продолжить его исполнение.
      */
-    RepairResponse RepairNew (1: MachineDescriptor desc, 2: Args a)
+    RepairResponse Repair (1: MachineDescriptor desc, 2: Args a)
         throws (
             1: NamespaceNotFound ex1,
             2: MachineNotFound ex2,
@@ -446,6 +432,13 @@ service Automaton {
             4: MachineAlreadyWorking ex4,
             5: RepairFailed ex5
         );
+
+    /**
+     * Попытаться перевести определённый процесс автомата из ошибочного
+     * состояния в предыдущее штатное и продолжить его исполнение.
+     */
+    void SimpleRepair (1: base.Namespace ns, 2: Reference ref)
+        throws (1: NamespaceNotFound ex1, 2: MachineNotFound ex2, 3: MachineFailed ex3, 4: MachineAlreadyWorking ex4);
 
     /**
      * Совершить вызов и дождаться на него ответа.
