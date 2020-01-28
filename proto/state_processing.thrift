@@ -104,8 +104,9 @@ struct Machine {
      */
     6: optional base.Timestamp timer;
 
-    // deprecated
-    5: optional AuxStateLegacy aux_state_legacy
+    // deallocated / reserved
+    // 5: optional AuxStateLegacy aux_state_legacy
+
 }
 
 /**
