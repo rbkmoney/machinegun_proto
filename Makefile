@@ -9,7 +9,8 @@ TEMPLATES_PATH := .
 SERVICE_NAME := machinegun_proto
 
 # Build image tag to be used
-BUILD_IMAGE_TAG := 585ec439a97bade30cfcebc36cefdb45f13f3372
+REGISTRY := dr2.rbkmoney.com
+BUILD_IMAGE_TAG := fcf116dd775cc2e91bffb6a36835754e3f2d5321
 CALL_ANYWHERE := \
         all submodules rebar-update compile clean distclean \
         java.compile java.deploy
